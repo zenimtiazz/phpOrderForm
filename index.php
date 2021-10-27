@@ -67,7 +67,7 @@ $products = [
    
 // calculating delivery time
 if(isset($_POST['express_delivery'])){
-    $i+=5;
+    $i = 5;
     $deliveryTime = "45 Minutes";
 }
 else{
@@ -130,7 +130,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if(isset($_POST['products'])){
             $total_c = 0;
             foreach ($_POST['products'] as $key => $value) {
-                $total_c = $total_c + $value;
+                $total_c = $total_c + $value+$i;
+                
             }
             
             if ($total_c > 0) {
