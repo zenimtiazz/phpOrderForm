@@ -131,8 +131,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             foreach ($_POST['products'] as $key => $value) {
                 $total_c = $total_c + $value;
             }
-            setcookie("price", strval($total_c), time() + (86400 * 30), "/");
-       
+            // setcookie("price", strval($total_c), time() + (86400 * 30), "/");
+            if ($total_c > 0) {
+                $saved = intval($_COOKIE["total_c"]); 
+                $total_c += $saved;
+                setcookie("total_c", strval($total_c), time()+ (60 * 1000), '/');
+                $_COOKIE["total_c"] = strval($total_c);
+               
+            }
     }
 
         ?>
