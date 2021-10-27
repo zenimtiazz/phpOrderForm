@@ -6,7 +6,7 @@ declare(strict_types=1);
 
 date_default_timezone_set("Europe/Brussels");
 
-include "total.php";
+
 if (!isset($_SESSION['email'])) {
     $_SESSION['email'] = "";
 }
@@ -41,16 +41,16 @@ if (!isset($_SESSION['zipcode'])) {
 $emailErr = $streetErr = $streetNumberErr = $cityErr = $zipcodeErr = "";
 $email = $street = $streetNumber = $city = $zipcode = "";
 
+// switch between food and products
 
-
-if ($_GET["food"] === "1"){
+if ( (isset($_GET["food"]) && $_GET["food"] === "1")){
    
 $products = [
     ['name' => 'Club Ham', 'price' => 3.20],
     ['name' => 'Club Cheese', 'price' => 3],
     ['name' => 'Club Cheese & Ham', 'price' => 4],
     ['name' => 'Club Chicken', 'price' => 4],
-    ['name' => 'Club Salmon', 'price' => 5]
+    ['name' => 'Club Salmon', 'price' => 5],
 ];
 
 }
@@ -65,7 +65,7 @@ $products = [
 
     }
    
-
+// calculating delivery time
 if(isset($_POST['express_delivery'])){
     $i+=5;
     $deliveryTime = "45 Minutes";
@@ -74,7 +74,7 @@ else{
     $deliveryTime = "2 hours";
 }
 
-    
+    //validation
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -87,16 +87,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $_SESSION['zipcode'] = $_POST["zipcode"];
     $_SESSION['items'] = $_POST["items"];
 
+    //validating email
 
     if (empty($_POST["email"]) ){
-        $email = "";
+        $emailErr = "Enter your email address";
         } else {
         $email = ($_POST['email']);
         if (!filter_var($_POST["email"], FILTER_VALIDATE_EMAIL)){
             $emailErr = "Invalid email";
         }
     }
-
+// validating address
     if (empty($_POST["street"]) || !preg_match("/^[a-zA-Z]+$/", $_POST["street"])) {
         $streetErr = "* Street name is required";
     } else {
@@ -108,13 +109,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         $streetNumber = ($_POST["streetNumber"]);
     }
-
+//validating city
     if (empty($_POST["city"]) || !preg_match("/^[a-zA-Z]+$/", $_POST["city"])) {
         $cityErr = "* City name is required";
     } else {
         $city = ($_POST["city"]);
     }
-
+// for zip code
     if (empty($_POST["zipcode"]) || !preg_match('/^[1-9][0-9]*$/', $_POST["zipcode"])) {
         $zipcodeErr = "* Zipcode is required";
     } else {
@@ -124,14 +125,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
  
 
     if ($emailErr == "" && $streetErr == "" && $streetNumberErr == "" && $cityErr == "" && $zipcodeErr == "") {
-        
+        // calculating total valuess
         
         if(isset($_POST['products'])){
             $total_c = 0;
             foreach ($_POST['products'] as $key => $value) {
                 $total_c = $total_c + $value;
             }
-            // setcookie("price", strval($total_c), time() + (86400 * 30), "/");
+            
             if ($total_c > 0) {
                 $saved = intval($_COOKIE["total_c"]); 
                 $total_c += $saved;
@@ -147,8 +148,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <div class="alert alert-success" role="alert"><?php echo "Your order will arrive in  $deliveryTime";?></div>
   <?php }
 }
+//email
 
-                     
+if(isset($_POST['submit'])){
+    $from = "email@example.com";
+    $to = $_POST['email']; 
+    $subject = "Order Completed";
+   
+    $message =  "Your order has been recieved";
+   
+    
+    mail($to,$subject,$message);
+    mail($from,$subject2,$message2); 
+    echo "Mail Sent. Thank you Your order will arrive shortly.";
+    
+    }               
 //whatIsHappening();
 require 'form-view.php';
 
