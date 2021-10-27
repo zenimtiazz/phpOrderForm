@@ -71,7 +71,7 @@
             <legend>products</legend>
             <?php foreach ($products as $product): ?>
                 <label>
-                    <input type="checkbox" value="1"<?php echo $product['price']; ?>" name="products[]"/> <?php echo $product['name'] ?> -
+                    <input type="checkbox" value="<?php echo $product['price']; ?>" name="products[]"/> <?php echo $product['name'] ?> -
                     &euro; <?php echo number_format($product['price'], 2) ?></label><br />
             <?php endforeach; ?>
             <span class="bg-danger text-white"><?php echo $itemsErr;?></span>
@@ -87,7 +87,7 @@
         </button>
     </form>
 
-    <footer>You already ordered <strong>&euro; <?php echo $totalValue; ?></strong> in food and drinks.</footer>
+    <footer>You already ordered <strong>&euro; <?php echo $total_c; ?></strong> in food and drinks.</footer>
 </div>
 
 <style>

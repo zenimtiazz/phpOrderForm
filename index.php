@@ -1,11 +1,12 @@
 <?php
 
+
 declare(strict_types=1);
 
 
 date_default_timezone_set("Europe/Brussels");
 
-
+include "total.php";
 if (!isset($_SESSION['email'])) {
     $_SESSION['email'] = "";
 }
@@ -20,10 +21,6 @@ if (!isset($_SESSION['city'])) {
 }
 if (!isset($_SESSION['zipcode'])) {
     $_SESSION['zipcode'] = "";
-}
-$total = 0;
-if (!isset($_COOKIE['total'])) {
-$total = ($_COOKIE['total']);
 }
 
 //Cookie variables
@@ -43,11 +40,10 @@ $total = ($_COOKIE['total']);
 
 $emailErr = $streetErr = $streetNumberErr = $cityErr = $zipcodeErr = "";
 $email = $street = $streetNumber = $city = $zipcode = "";
-$productPrice = [];
-$product = [];
 
 
-if (isset($_GET["food"]) && $_GET["food"] === "1"){
+
+if ($_GET["food"] === "1"){
    
 $products = [
     ['name' => 'Club Ham', 'price' => 3.20],
@@ -68,7 +64,7 @@ $products = [
 ];
 
     }
-
+   
 
 if(isset($_POST['express_delivery'])){
     $i+=5;
@@ -78,11 +74,7 @@ else{
     $deliveryTime = "2 hours";
 }
 
-       
-
-
-$totalValue = 0;
-
+    
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -133,45 +125,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($emailErr == "" && $streetErr == "" && $streetNumberErr == "" && $cityErr == "" && $zipcodeErr == "") {
         
-        // if (isset($_POST['products'])) {
-        //      $total = 0;
-        //      foreach($products as $i => $product) {
-        //           $$totalValue = $$totalValue+ $product['price'];
-        //     }    
-        //   return  $totalValue;
         
-            
-        // };
-
-
-    //         if (isset($_POST["products"][$i])){
-    //             foreach($products AS $i => $product) {
-    //             $total = $total+ $product['price'];
-                
-    //         }
-    //     };
-    //    $_SESSION['total']= $total;  
-
-    if (isset($_POST['products'])) {
-         
-    
-        foreach ($products as $key => $Product) {
-            $totalValue = $totalValue + $products[$product]['price'];
-        }
-    
-        // if (array_key_last($_POST) == "express_delivery") {
-        //     $totalValue = $totalValue + $_POST["express_delivery"];
-        // }
+        if(isset($_POST['products'])){
+            $total_c = 0;
+            foreach ($_POST['products'] as $key => $value) {
+                $total_c = $total_c + $value;
+            }
+            setcookie("price", strval($total_c), time() + (86400 * 30), "/");
+       
     }
+
         ?>
-  
+ 
     
 <div class="alert alert-success" role="alert"><?php echo "Your order will arrive in  $deliveryTime";?></div>
   <?php }
+}
 
-    }
-    
                      
 //whatIsHappening();
 require 'form-view.php';
+
+
+
+
 ?>
