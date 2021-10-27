@@ -1,4 +1,4 @@
-# phpOrderForm
+# Php Order Form
 The project where I have to create an order form to takes order and calculate the bills and display different food items:
   The steps followed:
   1: Validation i.e. to validate all the input fields.
