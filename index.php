@@ -3,8 +3,6 @@
 declare(strict_types=1);
 
 
-
-
 date_default_timezone_set("Europe/Brussels");
 
 
@@ -24,7 +22,7 @@ if (!isset($_SESSION['zipcode'])) {
     $_SESSION['zipcode'] = "";
 }
 $total = 0;
-if (isset($_COOKIE['total'])) {
+if (!isset($_COOKIE['total'])) {
 $total = ($_COOKIE['total']);
 }
 
@@ -45,8 +43,13 @@ $total = ($_COOKIE['total']);
 
 $emailErr = $streetErr = $streetNumberErr = $cityErr = $zipcodeErr = "";
 $email = $street = $streetNumber = $city = $zipcode = "";
+$productPrice = [];
+$product = [];
 
-$food = [
+
+if (isset($_GET["food"]) && $_GET["food"] === "1"){
+   
+$products = [
     ['name' => 'Club Ham', 'price' => 3.20],
     ['name' => 'Club Cheese', 'price' => 3],
     ['name' => 'Club Cheese & Ham', 'price' => 4],
@@ -54,32 +57,31 @@ $food = [
     ['name' => 'Club Salmon', 'price' => 5]
 ];
 
-$drinks = [
+}
+   
+    else{
+$products = [
     ['name' => 'Cola', 'price' => 2],
     ['name' => 'Fanta', 'price' => 2],
     ['name' => 'Sprite', 'price' => 2],
     ['name' => 'Ice-tea', 'price' => 3],
 ];
 
-
-
-
-if (isset($_GET['food'])) {
-    if ($_GET['food'] == 1) {
-        $products = $food;
-       
-    } else {
-        $products = $drinks;
-       
     }
-}
+
+
 if(isset($_POST['express_delivery'])){
-    $totalvalue+=5;
+    $i+=5;
     $deliveryTime = "45 Minutes";
 }
 else{
     $deliveryTime = "2 hours";
 }
+
+       
+
+
+$totalValue = 0;
 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -91,6 +93,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $_SESSION['streetNumber'] = $_POST["streetNumber"];
     $_SESSION['city'] = $_POST["city"];
     $_SESSION['zipcode'] = $_POST["zipcode"];
+    $_SESSION['items'] = $_POST["items"];
 
 
     if (empty($_POST["email"]) ){
@@ -120,32 +123,55 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $city = ($_POST["city"]);
     }
 
-    if (empty($_POST["zipcode"]) || !preg_match('/^[1-9][0-9]{3}+$/', $_POST["zipcode"])) {
+    if (empty($_POST["zipcode"]) || !preg_match('/^[1-9][0-9]*$/', $_POST["zipcode"])) {
         $zipcodeErr = "* Zipcode is required";
     } else {
         $zipcode = ($_POST["zipcode"]);
     }
-    if (empty($_POST["items"])){
-        $itemsErr = "* select items";
-    } else {
-        $items = ($_POST["items"]);
-    }
     
-
-
-
-
+ 
 
     if ($emailErr == "" && $streetErr == "" && $streetNumberErr == "" && $cityErr == "" && $zipcodeErr == "") {
         
-       
-        ?>
+        // if (isset($_POST['products'])) {
+        //      $total = 0;
+        //      foreach($products as $i => $product) {
+        //           $$totalValue = $$totalValue+ $product['price'];
+        //     }    
+        //   return  $totalValue;
+        
+            
+        // };
 
+
+    //         if (isset($_POST["products"][$i])){
+    //             foreach($products AS $i => $product) {
+    //             $total = $total+ $product['price'];
+                
+    //         }
+    //     };
+    //    $_SESSION['total']= $total;  
+
+    if (isset($_POST['products'])) {
+         
     
-<div class="alert alert-success" role="alert"><?php echo "Your order will arrive at $deliveryTime";?></div>
- <?php   }
+        foreach ($products as $key => $Product) {
+            $totalValue = $totalValue + $products[$product]['price'];
+        }
+    
+        // if (array_key_last($_POST) == "express_delivery") {
+        //     $totalValue = $totalValue + $_POST["express_delivery"];
+        // }
+    }
+        ?>
+  
+    
+<div class="alert alert-success" role="alert"><?php echo "Your order will arrive in  $deliveryTime";?></div>
+  <?php }
 
-    }  
-
+    }
+    
+                     
 //whatIsHappening();
-require 'form-view.php';?>
+require 'form-view.php';
+?>
